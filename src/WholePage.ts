@@ -4,6 +4,7 @@ import {defaultStyles} from './defaultStyles';
 import './components/Fractal';
 import './components/Controls';
 import { FractalSettings } from "./Types";
+import { styleMap } from 'lit-html/directives/style-map';
 
 @customElement('whole-page')
 /**
@@ -35,7 +36,8 @@ export class WholePage extends LitElement {
 	@internalProperty() settings: FractalSettings = {
 		noOfChildren: 30,
 		size: 35,
-		rotation: 73
+		rotation: 73,
+		noOfFracs: 3
 	}
 
 	settingsChanged(ev) {
@@ -43,14 +45,25 @@ export class WholePage extends LitElement {
 	}
 
 	render() {
-		return html`
-			<div class="container">
-				<div class="frax">
+		const fractals = Array.from(
+			{ length: this.settings.noOfFracs }, 
+			(_, idx) => {
+				const angle = idx * 360/this.settings.noOfFracs
+				return html`
+				<div class="relative"
+					style=${styleMap({transform: `rotate(${angle}deg)`})}>
 					<a-fractal 
 						noOfChildren=${this.settings.noOfChildren}
 						size=${this.settings.size}
 						rotation=${this.settings.rotation}
 					></a-fractal>
+				</div>
+		`})
+
+		return html`
+			<div class="container">
+				<div class="frax">
+					${fractals}
 				</div>
 				<control-panel
 					.settings=${this.settings}

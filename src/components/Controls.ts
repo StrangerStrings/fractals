@@ -55,6 +55,14 @@ export class Controls extends LitElement{
     }))
   }
 
+  changeNoOfFracs(ev) {
+    this.settings.noOfFracs = ev.target.value
+    this.dispatchEvent(new CustomEvent('changed', {
+      detail: {settings: this.settings}
+    }))
+  }
+
+
 	render() {
 		return html`
       <div class="container">
@@ -77,6 +85,13 @@ export class Controls extends LitElement{
           <input type="number" 
             @change=${this.changeSize}
             .value=${this.settings.size.toString()}
+          >
+        </div>
+        <div class="control">
+          no of fracs
+          <input type="number" 
+            @change=${this.changeNoOfFracs}
+            .value=${this.settings.noOfFracs.toString()}
           >
         </div>
       </div>
