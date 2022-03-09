@@ -1,7 +1,7 @@
 import { css, customElement, html, internalProperty, LitElement, property }
 	from "lit-element";
 import {defaultStyles} from './defaultStyles';
-import './components/Component';
+import './components/Fractal';
 
 @customElement('whole-page')
 /**
@@ -14,28 +14,26 @@ export class WholePage extends LitElement {
 		css`
 			.container {
 				height: 100%;
-				display: flex;
-				justify-content: space-between;
-				align-items: stretch;
-				padding: 40px;
 				background: peachpuff;
+			}
+			.frax {
+				position: absolute;
+				top: 50%;
+				left: 50%;
 			}
 		`
 	];
 
-	@property({type: String}) indexHtmlOption: string;
-	
-	@internalProperty() words: string[] = ["and", "what"];
-	// @internalProperty() words: string[] = ["hello", "world"];
-
 	render() {
-		var components = this.words.map((word) => 
-			html`<component-a word=${word}></component-a>`
-		);
-
 		return html`
 			<div class="container">
-				${components}
+				<div class="frax">
+					<a-fractal 
+						noOfChildren=${30}
+						size=35
+						rotation=93
+					></a-fractal>
+				</div>
 			</div>
 		`;
 	}
