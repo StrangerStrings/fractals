@@ -25,6 +25,10 @@ export class WholePage extends LitElement {
 				left: 50%;
 			}
 
+			.relative {
+				transition: transform 0.5s ease;
+			}
+
 			control-panel {
 				position: fixed;
 				bottom: 20px;
@@ -34,11 +38,25 @@ export class WholePage extends LitElement {
 	];
 
 	@internalProperty() settings: FractalSettings = {
-		noOfChildren: 30,
-		size: 35,
-		rotation: 73,
-		ratio: 1.1,
-		noOfFracs: 3,
+		noOfFracs: 5,
+		noOfChildren: 6,
+		rotation: 46,
+		size: 15,
+		forkPosition: 0.5,
+		shrinking: 1.055,
+		thinness: 44
+	}
+
+	@internalProperty() startingAngle: number = 0
+
+	connectedCallback(): void {
+		super.connectedCallback()
+  	window.addEventListener('keypress', this.changeAngle.bind(this));
+	}
+
+	changeAngle() {
+		this.startingAngle += 30
+		
 	}
 
 	settingsChanged(ev) {
@@ -46,19 +64,26 @@ export class WholePage extends LitElement {
 	}
 
 	render() {
+		const colours = ['rgba(195,39,207,1)', 'blueviolet']
+
 		const fractals = Array.from(
 			{ length: this.settings.noOfFracs }, 
 			(_, idx) => {
-				const angle = idx * 360/this.settings.noOfFracs
+				const angle = this.startingAngle + idx * 360/this.settings.noOfFracs
+				const color = colours[idx%colours.length]
+
 				return html`
 				<div class="relative"
 					style=${styleMap({transform: `rotate(${angle}deg)`})}>
-					<a-fractal 
+					<single-fractal 
 						noOfChildren=${this.settings.noOfChildren}
-						size=${this.settings.size}
 						rotation=${this.settings.rotation}
-						ratio=${this.settings.ratio}
-					></a-fractal>
+						size=${this.settings.size}
+						forkPosition=${this.settings.forkPosition}
+						shrinking=${this.settings.shrinking}
+						thinness=${this.settings.thinness}
+						color=${color}
+					></single-fractal>
 				</div>
 		`})
 

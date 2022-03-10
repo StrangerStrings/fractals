@@ -2,79 +2,95 @@ import { css, customElement, html, internalProperty, LitElement, property } from
 import { defaultStyles } from "../defaultStyles";
 import { styleMap } from 'lit-html/directives/style-map';
 
-
 /**
  * Just one configurable component for use and reuse
  */
-@customElement("a-fractal")
+@customElement("single-fractal")
 export class Fractal extends LitElement{
 	static styles = [
 		defaultStyles,
 		css`
-			.div1 {
+			.container {
 				position: relative;
 				transition: transform 0.2s ease
 			}
-			.div2 {
+			.line {
 				position: absolute;
 				background: black;
 				left: 50%;
 				top: 50%;
 			}
 
-			a-fractal {
+			single-fractal {
 				position: absolute;
 			}
 		`
 	];
 
 	@property({type: Number}) noOfChildren: number;
-
-	@property({type: Number}) size: number;
-
+	
 	@property({type: Number}) rotation: number;
-
-	@property({type: Number}) ratio: number;
+	
+	@property({type: Number}) size: number;
+	
+	@property({type: Number}) forkPosition: number;
+	
+	@property({type: Number}) shrinking: number;
+	
+	@property({type: Number}) thinness: number;
+	
+	@property({type: String}) color: string = 'black';
 	
 	render() {
 		
-		const rotation = this.rotation		
+		const rotation = this.rotation
 		const length = this.size
-		const width = this.size / 10
+		const width = this.size / this.thinness
 		const halfWidth = width/2
 		
-		const style1 = {
+		const containerStyle = {
 			transform: `rotate(${rotation}deg)`
 		}
 
-		const style2 = {
+		const lineStyle = {
 			height:  `${length}vw`,
 			width: `${width}vw`,
 			transform: `translate(-${halfWidth}vw, -${halfWidth}vw)`,
-			borderRadius: `${halfWidth}vw`
+			borderRadius: `${halfWidth}vw`,
+			background: `radial-gradient(circle, ${this.color} 45%, rgba(0,0,0,0) 100%)`
 		}
 		
-		const style3 = {
-			bottom: `${halfWidth}vw`,
+		const childStyle = {
+			top: `${length*this.forkPosition}vw`,
 			left: `${halfWidth}vw`
 		}
 
-		let child = html``;
+		const rotations = [-rotation, rotation]
+		
+		let children = [];
 		if (this.noOfChildren > 0) {
-		child = html`
-			<a-fractal 
-				noOfChildren=${this.noOfChildren-1}
-				size=${this.size/this.ratio}
-				rotation=${rotation}
-				ratio=${this.ratio}
-				style=${styleMap(style3)}
-			></a-fractal>`;
-		}
+			
+			children = rotations.map(r =>  {
+				const size = (this.size/this.shrinking) 
+
+				return html`
+					<single-fractal 
+						noOfChildren=${this.noOfChildren-1}
+						rotation=${r}
+						size=${size}
+						forkPosition=${this.forkPosition}
+						shrinking=${this.shrinking}
+						thinness=${this.thinness}
+						color=${this.color}
+						style=${styleMap(childStyle)}
+					></single-fractal>`;
+				}
+			)}
 
 		return html`
-				<div class="div1" style=${styleMap(style1)}>
-					<div class="div2" style=${styleMap(style2)}>
-						${child}
+				<div class="container" style=${styleMap(containerStyle)}>
+					<div class="line" style=${styleMap(lineStyle)}>
+						${children}
 					</div>
 				</div>
 		`;

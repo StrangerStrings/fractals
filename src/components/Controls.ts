@@ -27,13 +27,20 @@ export class Controls extends LitElement{
       }
       input {
         margin-left: 5px;
-        width: 40px
+        width: 60px
       }
 		`
 	];
 
 	@property({type: Object}) settings: FractalSettings;
 	
+  changeNoOfFracs(ev) {
+    this.settings.noOfFracs = ev.target.value
+    this.dispatchEvent(new CustomEvent('changed', {
+      detail: {settings: this.settings}
+    }))
+  }
+
   changeNoOfChildren(ev) {
     this.settings.noOfChildren = ev.target.value
     this.dispatchEvent(new CustomEvent('changed', {
@@ -55,53 +62,34 @@ export class Controls extends LitElement{
     }))
   }
 
-  changeRatio(ev) {
-    this.settings.ratio = ev.target.value
+  changeForkPosition(ev) {
+    this.settings.forkPosition = ev.target.value
+    this.dispatchEvent(new CustomEvent('changed', {
+      detail: {settings: this.settings}
+    }))
+  }
+  
+  changeShrinking(ev) {
+    this.settings.shrinking = ev.target.value
     this.dispatchEvent(new CustomEvent('changed', {
       detail: {settings: this.settings}
     }))
   }
 
-  changeNoOfFracs(ev) {
-    this.settings.noOfFracs = ev.target.value
+  changeThinness(ev) {
+    this.settings.thinness = ev.target.value
     this.dispatchEvent(new CustomEvent('changed', {
       detail: {settings: this.settings}
     }))
   }
+
 
 
 	render() {
 		return html`
       <div class="container">
-        <div class="control">
-          no of child
-          <input type="number" 
-            @change=${this.changeNoOfChildren}
-            .value=${this.settings.noOfChildren.toString()}
-          >
-        </div>
-        <div class="control">
-          rotation
-          <input type="number" 
-            @change=${this.changeRotation}
-            .value=${this.settings.rotation.toString()}
-          >
-        </div>
-        <div class="control">
-          size
-          <input type="number" 
-            @change=${this.changeSize}
-            .value=${this.settings.size.toString()}
-          >
-        </div>
-        <div class="control">
-          ratio
-          <input type="number" 
-            step=0.005
-            @change=${this.changeRatio}
-            .value=${this.settings.ratio.toString()}
-          >
-        </div>
+
+
         <div class="control">
           no of fracs
           <input type="number" 
@@ -109,6 +97,58 @@ export class Controls extends LitElement{
             .value=${this.settings.noOfFracs.toString()}
           >
         </div>
+
+        <div class="control">
+          no of childs
+          <input type="number" 
+            @change=${this.changeNoOfChildren}
+            .value=${this.settings.noOfChildren.toString()}
+          >
+        </div>
+
+        <div class="control">
+          rotation
+          <input type="number" 
+            @change=${this.changeRotation}
+            .value=${this.settings.rotation.toString()}
+          >
+        </div>
+
+        <div class="control">
+          size
+          <input type="number" 
+            @change=${this.changeSize}
+            .value=${this.settings.size.toString()}
+          >
+        </div>
+
+
+        <div class="control">
+          fork pos
+          <input type="number" 
+            step=0.05
+            @change=${this.changeForkPosition}
+            .value=${this.settings.forkPosition.toString()}
+          >
+        </div>
+
+        <div class="control">
+          shrink
+          <input type="number" 
+            step=0.005
+            @change=${this.changeShrinking}
+            .value=${this.settings.shrinking.toString()}
+          >
+        </div>
+
+        <div class="control">
+          thinness
+          <input type="number" 
+            @change=${this.changeThinness}
+            .value=${this.settings.thinness.toString()}
+          >
+        </div>
+
       </div>
 		`;
 	}
