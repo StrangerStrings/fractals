@@ -18,6 +18,8 @@ export class WholePage extends LitElement {
 			.container {
 				height: 100%;
 				background: peachpuff;
+				background: radial-gradient(circle, rgba(255,218,185,1) 74%, rgba(0,0,0,1) 100%);
+				background: radial-gradient(circle, rgba(255,218,185,1) 35%, rgba(183,156,133,1) 73%, rgba(0,0,0,1) 100%);
 			}
 			.frax {
 				position: absolute;
@@ -26,7 +28,7 @@ export class WholePage extends LitElement {
 			}
 
 			.relative {
-				transition: transform 0.5s ease;
+				transition: transform 1s linear
 			}
 
 			control-panel {
@@ -38,25 +40,57 @@ export class WholePage extends LitElement {
 	];
 
 	@internalProperty() settings: FractalSettings = {
-		noOfFracs: 5,
-		noOfChildren: 6,
-		rotation: 46,
-		size: 15,
-		forkPosition: 0.5,
-		shrinking: 1.055,
+		noOfFracs: 7,
+		noOfChildren: 3,
+		rotation: 40,
+		size: 28,
+		forkPosition: 0.4,
+		shrinking: 1.05,
 		thinness: 44
 	}
 
 	@internalProperty() startingAngle: number = 0
 
+	spinning: boolean = false;
+
+	spinningFunction: NodeJS.Timeout;
+
+	rotationFunction: NodeJS.Timeout;
+
+	rotationChange: number = 1;
+
 	connectedCallback(): void {
 		super.connectedCallback()
-  	window.addEventListener('keypress', this.changeAngle.bind(this));
+  	window.addEventListener('keypress', this.keyPress.bind(this));
 	}
 
-	changeAngle() {
-		this.startingAngle += 30
-		
+	keyPress(ev: KeyboardEvent) {
+		if (ev.key == ' '){
+			this.toggleSpin()
+		}
+	}
+
+	toggleSpin() {
+		if (this.spinning) {
+			clearInterval(this.spinningFunction)
+			clearInterval(this.rotationFunction)			
+			this.spinning = false
+		} else {
+			this.startingAngle += 80
+			this.spinningFunction = setInterval(()=>{
+				this.startingAngle += 80
+			},1000)
+
+			this.rotationFunction = setInterval(()=>{
+				this.settings.rotation += this.rotationChange
+				if (Math.abs(this.settings.rotation) > 360) {
+					this.rotationChange *= -1
+				}
+				this.settings = {...this.settings}
+			},100)
+			
+			this.spinning = true
+		}
 	}
 
 	settingsChanged(ev) {

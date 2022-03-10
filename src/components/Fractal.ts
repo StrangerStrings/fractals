@@ -69,7 +69,6 @@ export class Fractal extends LitElement{
 		
 		let children = [];
 		if (this.noOfChildren > 0) {
-			
 			children = rotations.map(r =>  {
 				const size = (this.size/this.shrinking) 
 
