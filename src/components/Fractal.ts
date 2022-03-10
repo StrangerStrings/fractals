@@ -13,6 +13,7 @@ export class Fractal extends LitElement{
 		css`
 			.div1 {
 				position: relative;
+				transition: transform 0.2s ease
 			}
 			.div2 {
 				position: absolute;
@@ -32,6 +33,8 @@ export class Fractal extends LitElement{
 	@property({type: Number}) size: number;
 
 	@property({type: Number}) rotation: number;
+
+	@property({type: Number}) ratio: number;
 	
 	render() {
 		
@@ -61,8 +64,9 @@ export class Fractal extends LitElement{
 		child = html`
 			<a-fractal 
 				noOfChildren=${this.noOfChildren-1}
-				size=${this.size/1.1}
+				size=${this.size/this.ratio}
 				rotation=${rotation}
+				ratio=${this.ratio}
 				style=${styleMap(style3)}
 			></a-fractal>`;
 		}

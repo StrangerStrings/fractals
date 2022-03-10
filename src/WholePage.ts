@@ -37,7 +37,8 @@ export class WholePage extends LitElement {
 		noOfChildren: 30,
 		size: 35,
 		rotation: 73,
-		noOfFracs: 3
+		ratio: 1.1,
+		noOfFracs: 3,
 	}
 
 	settingsChanged(ev) {
@@ -56,6 +57,7 @@ export class WholePage extends LitElement {
 						noOfChildren=${this.settings.noOfChildren}
 						size=${this.settings.size}
 						rotation=${this.settings.rotation}
+						ratio=${this.settings.ratio}
 					></a-fractal>
 				</div>
 		`})
