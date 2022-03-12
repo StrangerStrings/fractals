@@ -3,7 +3,7 @@ import { css, customElement, html, internalProperty, LitElement, property }
 import {defaultStyles} from './defaultStyles';
 import './components/Fractal';
 import './components/Controls';
-import { FractalSettings } from "./Types";
+import { defaultSettings, FractalSettings } from "./FractalSettings";
 import { styleMap } from 'lit-html/directives/style-map';
 
 @customElement('whole-page')
@@ -27,10 +27,6 @@ export class WholePage extends LitElement {
 				left: 50%;
 			}
 
-			.relative {
-				transition: transform 1s linear
-			}
-
 			control-panel {
 				position: fixed;
 				bottom: 20px;
@@ -39,26 +35,22 @@ export class WholePage extends LitElement {
 		`
 	];
 
-	@internalProperty() settings: FractalSettings = {
-		noOfFracs: 7,
-		noOfChildren: 3,
-		rotation: 40,
-		size: 28,
-		forkPosition: 0.4,
-		shrinking: 1.05,
-		thinness: 44
-	}
+	@internalProperty() settings: FractalSettings;
 
 	@internalProperty() startingAngle: number = 0
 
 	spinning: boolean = false;
 
+	spinningSpeed: number = 833;
+
 	spinningFunction: NodeJS.Timeout;
 
 	rotationFunction: NodeJS.Timeout;
 
-	rotationChange: number = 1;
+	rotationChange: number = 5;
 
+	angleChange: number = 40;
+	
 	connectedCallback(): void {
 		super.connectedCallback()
   	window.addEventListener('keypress', this.keyPress.bind(this));
@@ -68,29 +60,38 @@ export class WholePage extends LitElement {
 		if (ev.key == ' '){
 			this.toggleSpin()
 		}
+		if (!isNaN(parseInt(ev.key)) && ev.key != '0') {
+			this.spinningSpeed = 4000 / parseInt(ev.key)
+		}
 	}
 
 	toggleSpin() {
-		if (this.spinning) {
-			clearInterval(this.spinningFunction)
-			clearInterval(this.rotationFunction)			
-			this.spinning = false
-		} else {
-			this.startingAngle += 80
-			this.spinningFunction = setInterval(()=>{
-				this.startingAngle += 80
-			},1000)
-
-			this.rotationFunction = setInterval(()=>{
-				this.settings.rotation += this.rotationChange
-				if (Math.abs(this.settings.rotation) > 360) {
-					this.rotationChange *= -1
-				}
-				this.settings = {...this.settings}
-			},100)
-			
+		if (!this.spinning) {
 			this.spinning = true
+			this.spin()
+			this.recursiveSpin()
+		} else {
+			this.spinning = false
 		}
+	}
+
+	recursiveSpin() {
+		setTimeout(function() {
+			if (!this.spinning) {
+				return;
+			}
+			this.spin()
+			this.recursiveSpin()
+		}.bind(this), this.spinningSpeed)
+	}
+
+	spin() {
+		this.startingAngle += this.angleChange
+		this.settings.rotation += this.rotationChange
+		if (Math.abs(this.settings.rotation) >= 360) {
+			this.rotationChange *= -1
+		}
+		this.settings = {...this.settings}
 	}
 
 	settingsChanged(ev) {
@@ -100,15 +101,22 @@ export class WholePage extends LitElement {
 	render() {
 		const colours = ['rgba(195,39,207,1)', 'blueviolet']
 
+		const noOfFracs = this.settings?.noOfFracs ? this.settings.noOfFracs : 0
+
 		const fractals = Array.from(
-			{ length: this.settings.noOfFracs }, 
+			{ length: noOfFracs }, 
 			(_, idx) => {
-				const angle = this.startingAngle + idx * 360/this.settings.noOfFracs
 				const color = colours[idx%colours.length]
+
+				const angle = this.startingAngle + idx * 360/noOfFracs
+				const style = {
+					transform: `rotate(${angle}deg)`,
+					transition:`transform ${this.spinningSpeed - 10}ms linear`
+				}
 
 				return html`
 				<div class="relative"
-					style=${styleMap({transform: `rotate(${angle}deg)`})}>
+					style=${styleMap(style)}>
 					<single-fractal 
 						noOfChildren=${this.settings.noOfChildren}
 						rotation=${this.settings.rotation}
@@ -116,6 +124,8 @@ export class WholePage extends LitElement {
 						forkPosition=${this.settings.forkPosition}
 						shrinking=${this.settings.shrinking}
 						thinness=${this.settings.thinness}
+						sway=${this.settings.sway}
+						rotationSpeed=${this.spinningSpeed}
 						color=${color}
 					></single-fractal>
 				</div>

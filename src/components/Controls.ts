@@ -1,7 +1,7 @@
 import { css, customElement, html, internalProperty, LitElement, property } from "lit-element";
 import { defaultStyles } from "../defaultStyles";
 import { styleMap } from 'lit-html/directives/style-map';
-import { FractalSettings } from "../Types";
+import { defaultSettings, FractalSettings } from "../FractalSettings";
 
 
 /**
@@ -34,53 +34,57 @@ export class Controls extends LitElement{
 
 	@property({type: Object}) settings: FractalSettings;
 	
-  changeNoOfFracs(ev) {
-    this.settings.noOfFracs = ev.target.value
+  connectedCallback(): void {
+    super.connectedCallback()
+    this.settings = defaultSettings[1]
+    this.emitSettingsChangedEvent()
+  }
+
+  emitSettingsChangedEvent(): void {
     this.dispatchEvent(new CustomEvent('changed', {
       detail: {settings: this.settings}
     }))
+  }
+
+  changeNoOfFracs(ev) {
+    this.settings.noOfFracs = parseFloat(ev.target.value)
+
+    this.emitSettingsChangedEvent()
   }
 
   changeNoOfChildren(ev) {
     this.settings.noOfChildren = ev.target.value
-    this.dispatchEvent(new CustomEvent('changed', {
-      detail: {settings: this.settings}
-    }))
+    this.emitSettingsChangedEvent()
   }
 
   changeRotation(ev) {
-    this.settings.rotation = ev.target.value
-    this.dispatchEvent(new CustomEvent('changed', {
-      detail: {settings: this.settings}
-    }))
+    this.settings.rotation = parseFloat(ev.target.value)
+    this.emitSettingsChangedEvent()
   }
 
   changeSize(ev) {
     this.settings.size = ev.target.value
-    this.dispatchEvent(new CustomEvent('changed', {
-      detail: {settings: this.settings}
-    }))
+    this.emitSettingsChangedEvent()
   }
 
   changeForkPosition(ev) {
     this.settings.forkPosition = ev.target.value
-    this.dispatchEvent(new CustomEvent('changed', {
-      detail: {settings: this.settings}
-    }))
+    this.emitSettingsChangedEvent()
   }
   
   changeShrinking(ev) {
     this.settings.shrinking = ev.target.value
-    this.dispatchEvent(new CustomEvent('changed', {
-      detail: {settings: this.settings}
-    }))
+    this.emitSettingsChangedEvent()
+  }
+
+  changeSway(ev) {
+    this.settings.sway = ev.target.value
+    this.emitSettingsChangedEvent()
   }
 
   changeThinness(ev) {
     this.settings.thinness = ev.target.value
-    this.dispatchEvent(new CustomEvent('changed', {
-      detail: {settings: this.settings}
-    }))
+    this.emitSettingsChangedEvent()
   }
 
 
@@ -88,6 +92,7 @@ export class Controls extends LitElement{
 	render() {
 		return html`
       <div class="container">
+
 
 
         <div class="control">
@@ -138,6 +143,15 @@ export class Controls extends LitElement{
             step=0.005
             @change=${this.changeShrinking}
             .value=${this.settings.shrinking.toString()}
+          >
+        </div>
+
+        <div class="control">
+          sway
+          <input type="number" 
+            step=1
+            @change=${this.changeSway}
+            .value=${this.settings.sway.toString()}
           >
         </div>
 

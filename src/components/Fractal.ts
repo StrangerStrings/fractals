@@ -12,7 +12,7 @@ export class Fractal extends LitElement{
 		css`
 			.container {
 				position: relative;
-				transition: transform 0.2s ease
+				/* transition: transform 0.2s ease */
 			}
 			.line {
 				position: absolute;
@@ -39,7 +39,12 @@ export class Fractal extends LitElement{
 	
 	@property({type: Number}) thinness: number;
 	
+	@property({type: Number}) sway: number;
+	
 	@property({type: String}) color: string = 'black';
+	
+	@property({type: Number}) rotationSpeed: number;
+
 	
 	render() {
 		
@@ -49,7 +54,8 @@ export class Fractal extends LitElement{
 		const halfWidth = width/2
 		
 		const containerStyle = {
-			transform: `rotate(${rotation}deg)`
+			transform: `rotate(${rotation+this.sway}deg)`,
+			transition: `transform ${this.rotationSpeed - 10}ms linear`
 		}
 
 		const lineStyle = {
@@ -80,6 +86,8 @@ export class Fractal extends LitElement{
 						forkPosition=${this.forkPosition}
 						shrinking=${this.shrinking}
 						thinness=${this.thinness}
+						sway=${this.sway}
+						rotationSpeed=${this.rotationSpeed}
 						color=${this.color}
 						style=${styleMap(childStyle)}
 					></single-fractal>`;
