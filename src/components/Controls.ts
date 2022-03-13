@@ -1,6 +1,5 @@
 import { css, customElement, html, internalProperty, LitElement, property } from "lit-element";
-import { defaultStyles } from "../defaultStyles";
-import { styleMap } from 'lit-html/directives/style-map';
+import { defaultStyles, materialIcons } from "../defaultStyles";
 import { defaultSettings, FractalSettings } from "../FractalSettings";
 
 
@@ -11,6 +10,7 @@ import { defaultSettings, FractalSettings } from "../FractalSettings";
 export class Controls extends LitElement{
 	static styles = [
 		defaultStyles,
+    materialIcons,
 		css`
       .container {
         display: flex;
@@ -20,9 +20,6 @@ export class Controls extends LitElement{
         padding: 5px;
         border-radius: 8px;
         border: 2px solid tan;
-      }
-      .container[hidden] {
-        display: none;
       }
 
       .control {
@@ -42,12 +39,14 @@ export class Controls extends LitElement{
         justify-content: space-between;
         margin-top: 2px;
       }
-      button {
-        min-width: 24px;
+      span.material-icons {
         cursor: pointer;
+        color: #505050;
       }
       .show-button {
         padding: 7px;
+        display: flex;
+        justify-content: space-between;
       } 
 		`
 	];
@@ -241,13 +240,27 @@ export class Controls extends LitElement{
         </select>
 
         <div class="buttons">
-          <button @click=${this.toggleHide}>hide</button>
-          <button ?hidden=${!this.newSettings} @click=${this.save}>save</button>
-          <button ?hidden=${this.seletedCustom == undefined} @click=${this.delete}>delete</button>
+          <span class="material-icons" 
+            @click=${this.toggleHide}>
+            visibility_off
+          </span>
+          <span class="material-icons" 
+            ?hidden=${!this.newSettings} 
+            @click=${this.save}>
+            save
+          </span>
+          <span class="material-icons"  
+            ?hidden=${this.seletedCustom == undefined} 
+            @click=${this.delete}>
+            delete
+          </span>
         </div>
       </div>
       <div ?hidden=${!this.hidden} class="show-button">
-        <button @click=${this.toggleHide}>show</button>
+        <span class="material-icons" 
+          @click=${this.toggleHide}>
+          visibility
+        </span>
       </div>
 		`;
 	}
