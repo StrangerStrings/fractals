@@ -19,7 +19,7 @@ export type FractalSettings = {
 
 export const defaultSettings: FractalSettings[] = [
   {
-		noOfFracs: 3,
+		noOfFracs: 7,
 		noOfChildren: 3,
 		rotation: 40,
 		size: 28,
@@ -31,7 +31,7 @@ export const defaultSettings: FractalSettings[] = [
   {
 		noOfFracs: 16,
 		noOfChildren: 4,
-		rotation: 60,
+		rotation: 95,
 		size: 40,
 		forkPosition: 0.2,
 		shrinking: 1.25,
@@ -39,13 +39,13 @@ export const defaultSettings: FractalSettings[] = [
 		thinness: 44
   },
   {
-		noOfFracs: 13,
-		noOfChildren: 3,
-		rotation: 40,
-		size: 28,
-		forkPosition: 0.4,
-		shrinking: 1.05,
-		sway: 0,
-		thinness: 44
+		noOfFracs: 8,
+		noOfChildren: 4,
+		rotation: 55,
+		size: 15,
+		forkPosition: 0.5,
+		shrinking: 0.855,
+		sway: 18,
+		thinness: 50
   }
 ]

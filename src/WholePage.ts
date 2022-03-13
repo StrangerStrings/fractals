@@ -40,17 +40,15 @@ export class WholePage extends LitElement {
 	@internalProperty() startingAngle: number = 0
 
 	spinning: boolean = false;
-
 	spinningSpeed: number = 833;
 
 	spinningFunction: NodeJS.Timeout;
-
 	rotationFunction: NodeJS.Timeout;
 
 	rotationChange: number = 5;
-
-	angleChange: number = 40;
+	angleChange: number = 15;
 	
+
 	connectedCallback(): void {
 		super.connectedCallback()
   	window.addEventListener('keypress', this.keyPress.bind(this));
@@ -93,6 +91,7 @@ export class WholePage extends LitElement {
 		}
 		this.settings = {...this.settings}
 	}
+
 
 	settingsChanged(ev) {
 		this.settings = {...ev.detail.settings}
@@ -144,3 +143,9 @@ export class WholePage extends LitElement {
 		`;
 	}
 }
+
+
+//todoo:
+//  add colour changing to settings
+//  save customs to local on save and delete/ load on open
+//  icons for show/hide, save and delete
