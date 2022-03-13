@@ -1,9 +1,9 @@
-import { css, customElement, html, internalProperty, LitElement, property }
+import { css, customElement, html, internalProperty, LitElement }
 	from "lit-element";
 import {defaultStyles} from './defaultStyles';
 import './components/Fractal';
 import './components/Controls';
-import { defaultSettings, FractalSettings } from "./FractalSettings";
+import { FractalSettings } from "./FractalSettings";
 import { styleMap } from 'lit-html/directives/style-map';
 
 @customElement('whole-page')
@@ -147,5 +147,3 @@ export class WholePage extends LitElement {
 
 //todoo:
 //  add colour changing to settings
-//  save customs to local on save and delete/ load on open
-//  icons for show/hide, save and delete

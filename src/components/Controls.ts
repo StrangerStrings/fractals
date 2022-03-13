@@ -2,6 +2,7 @@ import { css, customElement, html, internalProperty, LitElement, property } from
 import { defaultStyles, materialIcons } from "../defaultStyles";
 import { defaultSettings, FractalSettings } from "../FractalSettings";
 
+const localSavedSettingsKey = 'savedFractalSettings';
 
 /**
  * Just one configurable component for use and reuse
@@ -63,23 +64,30 @@ export class Controls extends LitElement{
 
 
   connectedCallback(): void {
-    super.connectedCallback()
-    this.settings = defaultSettings[this.seletedDefault]
-    this.emitSettingsChangedEvent()
+    super.connectedCallback();
+    
+    this.settings = defaultSettings[this.seletedDefault];
+    this.emitSettingsChangedEvent();
+
+    const savedSettings = localStorage.getItem(
+      localSavedSettingsKey
+    );
+    if (savedSettings) {
+      this.customSettings = JSON.parse(savedSettings);
+    }
   }
 
-  emitSettingsChangedEvent(newSettings?: FractalSettings): void {
-    const settings = newSettings ? newSettings : this.settings
+  emitSettingsChangedEvent(): void {
     this.dispatchEvent(new CustomEvent('changed', {
       detail: {settings: this.settings}
-    }))
+    }));
   }
 
 
   changeProperty(ev) {
-    const id = ev.target.getAttribute('id')
-    this.settings[id] = ev.target.value
-    this.emitSettingsChangedEvent()
+    const id = ev.target.getAttribute('id');
+    this.settings[id] = ev.target.value;
+    this.emitSettingsChangedEvent();
 
     this.newSettings = true;
     this.seletedCustom = undefined;
@@ -87,18 +95,18 @@ export class Controls extends LitElement{
   }
 
   changeRotation(ev) {
-    this.settings.rotation = parseFloat(ev.target.value)
-    this.emitSettingsChangedEvent()
+    this.settings.rotation = parseFloat(ev.target.value);
+    this.emitSettingsChangedEvent();
   }
 
 
   pickNewSettings(ev) {
-    const newSettingsValue = ev.target.value as string
+    const newSettingsValue = ev.target.value as string;
     
     if (newSettingsValue.includes("default-")) {
-      const idx = parseInt(newSettingsValue.replace("default-", ""))
-      this.settings = defaultSettings[idx]
-      this.emitSettingsChangedEvent()
+      const idx = parseInt(newSettingsValue.replace("default-", ""));
+      this.settings = defaultSettings[idx];
+      this.emitSettingsChangedEvent();
 
       this.newSettings = false;
       this.seletedCustom = undefined;
@@ -106,10 +114,10 @@ export class Controls extends LitElement{
     }
     
     if (newSettingsValue.includes("custom-")) {
-      const idx = parseInt(newSettingsValue.replace("custom-", ""))
+      const idx = parseInt(newSettingsValue.replace("custom-", ""));
       
-      this.settings = this.customSettings[idx]
-      this.emitSettingsChangedEvent()
+      this.settings = this.customSettings[idx];
+      this.emitSettingsChangedEvent();
 
       this.newSettings = false;
       this.seletedDefault = undefined;
@@ -119,12 +127,16 @@ export class Controls extends LitElement{
   }
 
   save() {
-    this.customSettings.push({...this.settings})
-    this.customSettings = [...this.customSettings]
+    this.customSettings.push({...this.settings});
+    this.customSettings = [...this.customSettings];
 
     this.newSettings = false;
     this.seletedCustom = this.customSettings.length - 1;
     
+    localStorage.setItem(
+      localSavedSettingsKey, 
+      JSON.stringify(this.customSettings)
+    );
   }
 
   delete() {
@@ -135,13 +147,18 @@ export class Controls extends LitElement{
     this.customSettings.splice(this.seletedCustom, 1);
     this.customSettings = [...this.customSettings];
 
+    localStorage.setItem(
+      localSavedSettingsKey, 
+      JSON.stringify(this.customSettings)
+    );
+
     this.newSettings = true;
     this.seletedCustom = undefined;
     this.seletedDefault = undefined;
   }
 
   toggleHide() {
-    this.hidden = !this.hidden
+    this.hidden = !this.hidden;
   }
 
 

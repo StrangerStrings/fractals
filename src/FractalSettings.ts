@@ -9,9 +9,9 @@ export type FractalSettings = {
   size: number;
   /** How far up the line the fractal branches off */
   forkPosition?: number;
-  /** How much smaller each succsesive child gets (1.0 means stay the same) */
+  /** How much smaller each succsesive child gets (1 means stay the same, 2 means half each time) */
   shrinking: number;
-  
+  /** makes the angles on the branches sway to the left or right  */
   sway: number;
   /** How thin each line is */
   thinness?: number;
