@@ -1,103 +1,101 @@
-import { css, customElement, html, internalProperty, LitElement, property } from "lit-element";
-import { defaultStyles } from "../defaultStyles";
+import { css, customElement, html, LitElement, property } from "lit-element";
 import { styleMap } from 'lit-html/directives/style-map';
+import { defaultStyles } from "../defaultStyles";
 
 /**
- * Just one configurable component for use and reuse
+ * A fractal (a line) that can contain copies of itself, that can contain copies of itself, that can con..
  */
-@customElement("single-fractal")
+@customElement("my-fractal")
 export class Fractal extends LitElement{
 	static styles = [
 		defaultStyles,
 		css`
-			.container {
+			.pivot {
 				position: relative;
-				/* transition: transform 0.2s ease */
+				transition: all 0.3s ease;
 			}
 			.line {
 				position: absolute;
-				background: black;
 				left: 50%;
 				top: 50%;
 			}
 
-			single-fractal {
+			my-fractal {
 				position: absolute;
+				transition: all 0.3s ease;
 			}
 		`
 	];
 
+	/** how many more layers to go, becomes 1 less with each recursive fractal */
 	@property({type: Number}) noOfChildren: number;
-	
-	@property({type: Number}) rotation: number;
-	
+	// see FractalSettings.ts for these property descriptions
+	@property({type: Number}) angle: number;
 	@property({type: Number}) size: number;
-	
 	@property({type: Number}) forkPosition: number;
-	
 	@property({type: Number}) shrinking: number;
-	
-	@property({type: Number}) thinness: number;
-	
 	@property({type: Number}) sway: number;
-	
-	@property({type: String}) color: string = 'black';
-	
-	@property({type: Number}) rotationSpeed: number;
+	@property({type: Number}) thinness: number;
+	@property({type: String}) color: string;
+	/** how fast the 'angle' changes */
+	@property({type: Number}) spinningSpeed: number;
 
 	
 	render() {
+		const length = this.size;
+		const width = this.size / this.thinness;
+		const halfWidth = width/2;
+		const forkPosition = length * this.forkPosition;
+
+		const angle = this.angle + this.sway;
 		
-		const rotation = this.rotation
-		const length = this.size
-		const width = this.size / this.thinness
-		const halfWidth = width/2
-		
-		const containerStyle = {
-			transform: `rotate(${rotation+this.sway}deg)`,
-			transition: `transform ${this.rotationSpeed - 10}ms linear`
-		}
+		const pivotStyle = {
+			transform: `rotate(${angle}deg)`,
+			transition: `transform ${this.spinningSpeed}ms linear`
+		};
 
 		const lineStyle = {
-			height:  `${length}vw`,
 			width: `${width}vw`,
+			height:  `${length}vw`,
 			transform: `translate(-${halfWidth}vw, -${halfWidth}vw)`,
 			borderRadius: `${halfWidth}vw`,
+			zIndex: `${100-this.noOfChildren}`,
 			background: `radial-gradient(circle, ${this.color} 45%, rgba(0,0,0,0) 100%)`
-		}
+		};
 		
-		const childStyle = {
-			top: `${length*this.forkPosition}vw`,
-			left: `${halfWidth}vw`
-		}
 
-		const rotations = [-rotation, rotation]
-		
-		let children = [];
+		const branchAngles = [-this.angle, this.angle];
+		let fractalBranches = [];
 		if (this.noOfChildren > 0) {
-			children = rotations.map(r =>  {
-				const size = (this.size/this.shrinking) 
+			fractalBranches = branchAngles.map(angle =>  {
+				const size = (this.size/this.shrinking);
+
+				const branchesStyle = {
+					left: `${halfWidth}vw`,
+					top: `${forkPosition}vw`
+				};
 
 				return html`
-					<single-fractal 
+					<my-fractal 
 						noOfChildren=${this.noOfChildren-1}
-						rotation=${r}
+						angle=${angle}
 						size=${size}
 						forkPosition=${this.forkPosition}
 						shrinking=${this.shrinking}
 						thinness=${this.thinness}
 						sway=${this.sway}
-						rotationSpeed=${this.rotationSpeed}
+						spinningSpeed=${this.spinningSpeed}
 						color=${this.color}
-						style=${styleMap(childStyle)}
-					></single-fractal>`;
-				}
-			)}
+						style=${styleMap(branchesStyle)}
+					></my-fractal>`;
+			});
+		};
+
 
 		return html`
-				<div class="container" style=${styleMap(containerStyle)}>
+				<div class="pivot" style=${styleMap(pivotStyle)}>
 					<div class="line" style=${styleMap(lineStyle)}>
-						${children}
+						${fractalBranches}
 					</div>
 				</div>
 		`;

@@ -1,51 +1,62 @@
+/** Settings that describe the look and behavior */
 export type FractalSettings = {
   /** Number of initial fractals on the page  */
-  noOfFracs: number;
+  amount: number;
   /** How many layers deep to go in each fractal */
-  noOfChildren: number;
-  /** The angle for each fork of the branch */
-  rotation: number;
+  layers: number;
+  /** The angle between each parent fractal and it's child branch */
+  angle: number;
   /** How big the fractals are */
   size: number;
-  /** How far up the line the fractal branches off */
+  /** How far up the parent line the child fractal branches off */
   forkPosition?: number;
-  /** How much smaller each succsesive child gets (1 means stay the same, 2 means half each time) */
+  /** How much smaller each succsesive child gets ('2' halves each time, '1' stays the same) */
   shrinking: number;
-  /** makes the angles on the branches sway to the left or right  */
+  /** Makes the angles on the branches sway/drift/twist to the left or right  */
   sway: number;
   /** How thin each line is */
   thinness?: number;
+	/** Set of colours for the fractals to choose from */
+	colors: string[];
+	/** background colour */
+	backgroundColor: string;
 }
 
 export const defaultSettings: FractalSettings[] = [
   {
-		noOfFracs: 7,
-		noOfChildren: 3,
-		rotation: 40,
+		amount: 7,
+		layers: 2,
+		angle: 130,
 		size: 28,
 		forkPosition: 0.4,
 		shrinking: 1.05,
 		sway: 0,
-		thinness: 44
+		thinness: 44,
+		colors: ['#c327cf', '#8a2be2'],
+		backgroundColor: '#000000'
   },
   {
-		noOfFracs: 16,
-		noOfChildren: 4,
-		rotation: 95,
+		amount: 16,
+		layers: 4,
+		angle: 95,
 		size: 40,
 		forkPosition: 0.2,
 		shrinking: 1.25,
 		sway: -10,
-		thinness: 44
+		thinness: 44,
+		colors: ['#c327cf', '#8a2be2'],
+		backgroundColor: '#ffdab9'
   },
   {
-		noOfFracs: 8,
-		noOfChildren: 4,
-		rotation: 55,
+		amount: 8,
+		layers: 4,
+		angle: 55,
 		size: 15,
 		forkPosition: 0.5,
 		shrinking: 0.855,
 		sway: 18,
-		thinness: 50
+		thinness: 50,
+		colors: ['#c327cf', '#8a2be2'],
+		backgroundColor: '#ffdab9'
   }
 ]
